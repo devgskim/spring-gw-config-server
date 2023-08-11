@@ -26,8 +26,8 @@ spring:
 resilience4j.circuitbreaker:
   configs:
     default:
-      failureRateThreshold: 50
-      slowCallRateThreshold: 100
+      failureRateThreshold: "50"
+      slowCallRateThreshold: "100"
       slowCallDurationThreshold: 60000
       permittedNumberOfCallsInHalfOpenState: 4
       maxWaitDurationInHalfOpenState: 1000
