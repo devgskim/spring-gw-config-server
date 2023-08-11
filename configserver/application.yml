@@ -1,0 +1,67 @@
+server:
+  port: 18080
+
+spring:
+  application:
+    name: api-gw-svc
+  cloud:
+    gateway:
+      routes:
+        - id: tst2
+          uri: http://localhost:18082
+          predicates:
+            - Path=/svc2/**
+          filters:
+            - AddRequestHeader=X-Request-Foo, Bar
+            - AddRequestHeader=Connection, keep-alive
+      default-filters:
+        - name: CustomFilter
+          args:
+            baseMessage: Spring Cloud Gateway GlobalFilter
+            preLogger: false
+            postLogger: true
+  session:
+    store-type: none
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      failureRateThreshold: 50
+      slowCallRateThreshold: 100
+      slowCallDurationThreshold: 60000
+      permittedNumberOfCallsInHalfOpenState: 4
+      maxWaitDurationInHalfOpenState: 1000
+      slidingWindowType: COUNT_BASED
+      slidingWindowSize: 10
+      minimumNumberOfCalls: 10
+      waitDurationInOpenState: 10000
+      registerHealthIndicator: true
+      recordExceptions: java.util.concurrent.TimeoutException
+      eventConsumerBufferSize: 10
+  instances:
+    test-svc:
+      baseConfig: default
+
+resilience4j.timelimiter:
+  configs:
+    default:
+      timeoutDuration: 3s
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoint:
+    health:
+      showDetails: always
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  metrics:
+    enable:
+      resilience4j:
+        circuitbreaker:
+          calls: true
