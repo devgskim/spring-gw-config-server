@@ -1,5 +1,0 @@
-spring:
-  datasource:
-    uri: http://localhost:8080
-    username: root
-    password: password
