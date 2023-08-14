@@ -1,6 +1,24 @@
-server:
-  port: 18080
-
 spring:
   application:
-    name: api-gw-svc
+    name: config-client
+  config:
+    import: optional:configserver:http://localhost:9000
+  cloud:
+    config:
+      watch:
+        enabled: true
+        initialDelay: 5000
+        delay: 10000
+      fail-fast: true
+      retry:
+        initial-interval: 1000
+        max-attempts: 5
+        multiplier: 1.1
+      request-connect-timeout: 2000
+      request-read-timeout: 10000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
